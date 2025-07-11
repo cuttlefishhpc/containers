@@ -1,0 +1,43 @@
+Bootstrap: docker
+From: mambaorg/micromamba:alpine3.21
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running ABySS 2.3.10 with micromamba on Alpine"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%files
+    environment.yml /environment.yml
+
+%post
+    set -e
+
+    echo "setting up micromamba"
+    export MAMBA_ROOT_PREFIX=/opt/conda
+    export PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
+    micromamba install -y -n base -f /environment.yml
+    micromamba clean --all --yes
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+
+    echo "caching abyss commands"
+    find /opt/conda/bin -maxdepth 1 -type f -executable -name 'abyss-*' 2>/dev/null | grep -v "\." | sort > /opt/conda/bin/.abyss_commands
+
+%environment
+    export MAMBA_ROOT_PREFIX=/opt/conda
+    export PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
+    export CONDA_DEFAULT_ENV=base
+
+%runscript
+    if [ $# -eq 0 ]; then
+        echo "Usage: abyss@2.3.10 <command>"
+        echo "Commands:"
+        while IFS= read -r command; do
+            echo "  $(basename "$command")"
+        done < /opt/conda/bin/.abyss_commands
+    else
+        exec "$@"
+    fi
