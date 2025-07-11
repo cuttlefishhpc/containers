@@ -10,6 +10,3 @@ build-env:
 
 build-sif:
     apptainer build --force --ignore-fakeroot-command final.sif build.def
-
-reset:
-    rm enviroment.yml final.sif

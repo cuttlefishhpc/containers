@@ -1,0 +1,13 @@
+Bootstrap: localimage
+From: raw-fixed.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running admixture 1.3.0"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%runscript
+    exec /usr/local/bin/admixture "$@"
+

@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/admixtools:7.0.2--h75d7a4a_5
+
+build-sif:
+    apptainer build --force final.sif build.def

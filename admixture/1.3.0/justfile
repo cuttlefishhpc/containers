@@ -1,0 +1,25 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just patch-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/admixture:1.3.0--0
+
+patch-raw:
+    #!/bin/bash
+    rm -rf raw-sandbox raw-fixed.sif
+    apptainer build --sandbox raw-sandbox raw.sif
+    
+    # make the directories inside the container
+    mkdir -p raw-sandbox/{storage,scratch}
+
+    # Build the patched image
+    apptainer build raw-fixed.sif raw-sandbox
+    rm -rf raw-sandbox
+
+build-sif:
+    apptainer build --force final.sif build.def
