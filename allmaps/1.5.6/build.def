@@ -1,0 +1,55 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running allmaps version 1.5.6"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%files
+    help_message.txt /opt/help_message.txt
+
+%post
+    # Update package list and install basic tools
+    apt-get update && apt-get install -y \
+        git \
+        wget \
+        python3 \
+        python3-pip \
+        pandoc \
+        tar \
+        curl \
+        ca-certificates \
+        && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+    # Create symlinks for python and pip
+    ln -s /usr/bin/python3 /usr/bin/python
+
+    # Upgrade pip, setuptools, and wheel
+
+    # Upgrade pip and pin setuptools to avoid deprecation warnings
+    python3 -m pip install --upgrade pip
+    pip install "setuptools<81" wheel
+
+    # Install build-time dependency first
+    pip install pypandoc==1.5 numpy
+
+    # Install almaps (jcvi)
+    pip install biopython==1.70 deap networkx matplotlib jcvi
+
+    # Cleanup
+    rm -rf /root/.cache /usr/local/lib/python*/dist-packages/*/tests
+
+%environment
+    export PATH=/usr/local/bin:$PATH
+    export LC_ALL=C.UTF-8
+    export LANG=C.UTF-8
+
+%runscript
+    if [ "$1" = "--help" ] || [ "$1" = "-h" ] || [ $# -eq 0 ]; then
+        cat /opt/help_message.txt
+    else
+        exec python3 -m jcvi.assembly.allmaps "$@"
+    fi

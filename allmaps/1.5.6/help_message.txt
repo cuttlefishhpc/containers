@@ -1,0 +1,18 @@
+Usage:
+    allmaps ACTION
+
+Available ACTIONs:
+           build | Build associated FASTA and CHAIN file
+    estimategaps | Estimate sizes of inter-scaffold gaps
+            fake | Make fake scaffolds.fasta
+           merge | Merge csv maps and convert to bed format
+        mergebed | Merge maps in bed format
+           movie | Visualize history of scaffold OO
+            path | Construct golden path given a set of genetic maps
+            plot | Plot matches between goldenpath and maps for single object
+         plotall | Plot matches between goldenpath and maps for all objects
+       plotratio | Illustrate physical vs map distance ratio
+           split | Split suspicious scaffolds
+         summary | Report summary stats for maps and final consensus
+
+JCVI utility libraries 1.5.6 [Copyright (c) 2010-2025, Haibao Tang]
