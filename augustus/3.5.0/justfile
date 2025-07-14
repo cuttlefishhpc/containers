@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/augustus:3.5.0--pl5321heb9362c_5
+
+build-sif:
+    apptainer build --force final.sif build.def
