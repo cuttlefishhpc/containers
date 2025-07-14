@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/bayescan:2.0.1--h9948957_7
+
+build-sif:
+    apptainer build --force final.sif build.def
