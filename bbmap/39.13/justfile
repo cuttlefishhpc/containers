@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/bbmap:39.13--he5f24ec_1
+
+build-sif:
+    apptainer build --force final.sif build.def

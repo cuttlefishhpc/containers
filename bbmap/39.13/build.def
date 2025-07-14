@@ -1,0 +1,27 @@
+Bootstrap: localimage
+From: raw.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running bbmap 39.13"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+
+%runscript
+    if [ $# -eq 0 ]; then
+        echo "Usage: bbmap@39.13 <command>"
+        echo "Commands:"
+        commands=$(ls /usr/local/bin/ | grep "^bb" | sort)
+        for command in $commands; do
+            echo "  $(basename "$command")"
+        done
+    else
+        exec "$@"
+    fi
