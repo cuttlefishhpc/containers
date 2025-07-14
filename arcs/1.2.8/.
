@@ -1,0 +1,31 @@
+Bootstrap: localimage
+From: raw.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running admixtools 7.0.2"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+    
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+
+    echo "caching admixtools commands"
+    mkdir -p /opt
+    find /usr/local/bin -maxdepth 1 -type f -executable 2>/dev/null | grep -v "\." | sort > /opt/.commands
+
+%runscript
+    if [ $# -eq 0 ]; then
+        echo "Usage: admixtools@7.0.2 <command>"
+        echo "Commands:"
+        while IFS= read -r command; do
+            echo "  $(basename "$command")"
+        done < /opt/.commands
+    else
+        exec "$@"
+    fi
+

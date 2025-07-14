@@ -1,0 +1,31 @@
+Bootstrap: localimage
+From: raw.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running arcs 1.2.8"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+    
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+
+    echo "caching arcs commands"
+    mkdir -p /opt
+    find /usr/local/bin -maxdepth 1 -type f -executable 2>/dev/null | grep "arcs" | sort > /opt/.commands.txt
+
+%runscript
+    if [ $# -eq 0 ]; then
+        echo "Usage: arcs@1.2.8 <command>"
+        echo "Commands:"
+        while IFS= read -r command; do
+            echo "  $(basename "$command")"
+        done < /opt/.commands.txt
+    else
+        exec "$@"
+    fi
+
