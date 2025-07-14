@@ -22,7 +22,6 @@ From: raw.sif
     if [ $# -eq 0 ]; then
         echo "Usage: admixtools@7.0.2 <command>"
         echo "Commands:"
-        echo "Commands:"
         while IFS= read -r command; do
             echo "  $(basename "$command")"
         done < /opt/.commands

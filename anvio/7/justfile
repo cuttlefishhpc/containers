@@ -1,0 +1,31 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just patch-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/anvio:7--hdfd78af_1
+
+patch-raw:
+    #!/bin/bash
+    echo "converting the raw sif to a sandbox to patch in changes"
+    rm -rf sandbox_dir
+    apptainer build --sandbox sandbox_dir raw.sif
+
+    echo "Making scratch and storage directories"
+    mkdir -p sandbox_dir/scratch
+    mkdir -p sandbox_dir/storage
+
+    echo "Catching anvio commands for spead"
+    mkdir -p sandbox_dir/opt/
+    ls sandbox_dir/usr/local/bin/ | grep "anvi" > sandbox_dir/opt/.commands.txt
+
+    echo "Rebuilding image"
+    apptainer build --force raw_patched.sif sandbox_dir
+    rm -rf sandbox_dir
+    
+build-sif:
+    apptainer build --force final.sif build.def
