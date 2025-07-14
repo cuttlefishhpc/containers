@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/bedtools:2.31.1--h13024bc_3
+
+build-sif:
+    apptainer build --force final.sif build.def
