@@ -1,0 +1,23 @@
+Bootstrap: localimage
+From: raw_patched.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running bayesase version 21.1.13.1"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%runscript
+   if [ $# -eq 0 ]; then
+     echo "Usage: bayesase@21.1.13.1 <command>"
+        echo "Commands:"
+        commands=$(ls /usr/local/bin | grep "\.py" | sort)
+        for command in $commands; do
+            base=$(basename "$command")
+            echo "  $base"
+        done
+   else
+     exec "$@"
+   fi
+
