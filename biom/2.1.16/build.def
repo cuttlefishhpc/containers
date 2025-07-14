@@ -1,0 +1,29 @@
+Bootstrap: docker
+From: mambaorg/micromamba:1.5.8
+
+%files
+    environment.yml /environment.yml
+
+%post
+    # Set up micromamba
+    export MAMBA_ROOT_PREFIX=/opt/conda
+    export PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
+
+    micromamba install -y -n base -f /environment.yml
+    micromamba clean --all --yes
+
+    # Run biom and cache the help menu
+    mkdir -p /opt
+    biom --help > /opt/.help_menu.txt
+
+%environment
+    export MAMBA_ROOT_PREFIX=/opt/conda
+    export PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
+    export CONDA_DEFAULT_ENV=base
+
+%runscript
+    if [ $# -eq 0 ]; then
+        exec cat /opt/.help_menu.txt
+    else
+        exec biom "$@"
+    fi 
