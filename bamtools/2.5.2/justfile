@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/bamtools:2.5.2--h077b44d_6
+
+build-sif:
+    apptainer build --force final.sif build.def
