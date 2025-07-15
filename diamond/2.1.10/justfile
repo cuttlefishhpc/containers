@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/diamond:2.1.10--h5ca1c30_3
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
