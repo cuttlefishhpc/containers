@@ -1,0 +1,50 @@
+Bootstrap: docker
+From: alpine:3.20
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running discoal 0.1.5"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "Installing dependencies"
+    apk update && apk add --no-cache \
+        git \
+        make \
+        gcc \
+        musl-dev \
+        libc-dev \
+        build-base
+
+    echo "Creating HPC mount points"
+    mkdir -p /storage /scratch
+
+    echo "Cloning the GitHub repo"
+    mkdir -p /opt
+    cd /opt
+    git clone https://github.com/kr-colab/discoal
+
+    echo "Building discoal"
+    cd discoal
+    make
+
+    echo "Moving binary to /usr/local/bin"
+    cp discoal /usr/local/bin/discoal
+
+    echo "Caching the help menu"
+    (/usr/local/bin/discoal 2>&1) > /opt/.help_menu.txt || true
+
+    echo "Cleaning up"
+    rm -rf /var/cache/apk/*
+    rm -rf /opt/discoal
+
+%runscript
+    if [ $# -eq 0 ]; then
+        exec cat /opt/.help_menu.txt
+    else
+        exec /usr/local/bin/discoal "$@"
+    fi
