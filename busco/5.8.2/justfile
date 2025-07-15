@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/busco:5.8.2--pyhdfd78af_0
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
