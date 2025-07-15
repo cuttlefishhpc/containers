@@ -1,0 +1,26 @@
+Bootstrap: localimage
+From: raw.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running bowtie2 version 2.5.4"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+    
+    echo "Caching the help menu"
+    mkdir -p /opt
+    (bowtie2 2>&1) > /opt/.help_menu.txt || true
+
+%runscript
+    if [ $# -eq 0 ]; then
+        exec cat /opt/.help_menu.txt
+    else
+        exec "$@"
+    fi
