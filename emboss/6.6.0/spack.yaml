@@ -1,0 +1,17 @@
+spack:
+  specs:
+  - emboss@6.6.0
+
+  container:
+    # Select the format of the recipe e.g. docker,
+    # singularity or anything else that is currently supported
+    format: singularity
+
+    # Sets the base images for the stages where Spack builds the
+    # software or where the software gets installed after being built..
+    images:
+      os: "ubuntu:24.04"
+      spack: develop
+
+    # Whether or not to strip binaries
+    strip: true
