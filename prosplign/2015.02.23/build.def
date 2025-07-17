@@ -1,0 +1,58 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running prosplign"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%files
+    prosplign.tar.gz /opt/prosplign.tar.gz
+
+%post
+    set -e
+
+    apt-get update && apt-get install -y \
+        tar \
+        gzip \
+        libsqlite3-0 \
+        libcurl4 \
+        libbz2-1.0 \
+        zlib1g \
+        libgssapi-krb5-2 \
+        libkrb5-3 \
+        libk5crypto3 \
+        libcom-err2 \
+        libstdc++6 \
+        libgcc1 \
+        libc6 \
+        libnghttp2-14 \
+        libidn2-0 \
+        libssh-4 \
+        libpsl5 \
+        libssl1.1 \
+        libldap-2.4-2 \
+        libbrotli1 \
+        libkrb5support0 \
+        libkeyutils1 \
+        libevent-2.1-6 \
+        libsasl2-2 \
+        libselinux1 \
+        libpcre3 \
+        libdb4.6 \
+        && rm -rf /var/lib/apt/lists/*
+
+    # Extract and install ProSplign
+    cd /usr/local/bin
+    tar --no-same-owner -xzf /opt/prosplign.tar.gz
+    chmod +x prosplign
+    rm /opt/prosplign.tar.gz
+
+%environment
+    export PATH=/usr/local/bin:$PATH
+
+%runscript
+    exec prosplign "$@"
+
