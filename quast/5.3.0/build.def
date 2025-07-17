@@ -1,0 +1,28 @@
+Bootstrap: localimage
+From: raw.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running quast 5.3.0"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+    
+%runscript
+    if [ $# -eq 0 ]; then
+        echo "Usage: quast@5.3.0 <command>"
+        echo "Commands:"
+        commands=$(ls /usr/local/bin/ | grep "^quast" | grep -v ".py" | grep -v ".pl" | sort)
+        for command in $commands; do
+            base=$(basename "$command")
+            echo "  $base"
+        done
+    else
+        exec "$@"
+    fi
