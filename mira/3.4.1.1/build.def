@@ -1,0 +1,12 @@
+Bootstrap: localimage
+From: raw_patched.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running mira 3.4.1.1"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%runscript
+    exec mira "$@"
