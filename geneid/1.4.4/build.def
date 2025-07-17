@@ -1,0 +1,38 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running geneid 1.4.4"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    apt-get update && apt-get install -y \
+        wget \
+        make \
+        g++ \
+        zlib1g-dev \
+        libbz2-dev \
+        liblzma-dev \
+        libcurl4-openssl-dev \
+        ca-certificates \
+        && rm -rf /var/lib/apt/lists/*
+
+    # Download and compile geneid
+    cd /opt
+    wget https://genome.crg.es/pub/software/geneid/geneid_v1.4.4.Jan_13_2011.tar.gz
+    tar -xzf geneid_v1.4.4.Jan_13_2011.tar.gz
+    cd geneid
+    make
+
+    # Move binary to a standard location
+    cp bin/geneid /usr/local/bin/geneid
+
+    # Cleanup
+    rm -rf /opt/geneid
+
+%runscript
+    exec geneid "$@"
+
