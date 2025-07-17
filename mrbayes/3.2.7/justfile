@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/mrbayes:3.2.7--hd0d793b_7
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
