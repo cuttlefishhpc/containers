@@ -1,0 +1,30 @@
+Bootstrap: localimage
+From: raw.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running hmmer 3.4"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+    
+    echo "Caching the help menu"
+    mkdir -p /opt
+    ls /usr/local/bin/*hmm* | sort > /opt/.commands.txt
+
+%runscript
+    if [ $# -eq 0 ]; then
+        echo "Usage: hmmer@3.4 <command>"
+        echo "Commands:"
+        while IFS= read -r command; do
+            echo "  $(basename "$command")"
+        done < /opt/.commands.txt
+    else
+        exec "$@"
+    fi
