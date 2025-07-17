@@ -1,0 +1,40 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running lifton 1.0.5"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    # Install Python and pip
+    apt-get update && apt-get install -y \
+        git \
+        python3 \
+        python3-pip \
+        && rm -rf /var/lib/apt/lists/*
+
+    # download and compile miniprot
+    git clone https://github.com/lh3/miniprot
+    cd miniprot && make
+    cp miniprot /usr/local/bin
+
+    # Install the lifton package
+    pip3 install lifton
+
+    # Catch the help menu
+    mkdir -p /opt
+    (lifton 2>&1) > /opt/.help_menu.txt || true
+
+%environment
+    export PATH=/usr/local/bin:$PATH
+    export PYTHONUNBUFFERED=1
+
+%runscript
+    if [ $# -eq 0 ]; then
+        exec cat /opt/.help_menu.txt
+    else
+        exec lifton "$@"
+    fi
