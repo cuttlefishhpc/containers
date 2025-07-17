@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/mitofinder:1.4.1--py27h9801fc8_1
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
