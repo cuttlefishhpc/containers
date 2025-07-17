@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer build raw.sif docker://nbeck/mfannot
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
