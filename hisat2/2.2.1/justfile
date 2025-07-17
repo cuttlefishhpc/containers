@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/hisat2:2.2.1--h503566f_8
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
