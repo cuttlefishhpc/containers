@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/hifiasm:0.24.0--h5ca1c30_0
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
