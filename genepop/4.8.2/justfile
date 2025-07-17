@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/genepop:4.8.2--h9948957_1
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
