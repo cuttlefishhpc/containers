@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/snap:2013_11_29--hec16e2b_5
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
