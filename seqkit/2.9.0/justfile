@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/seqkit:2.9.0--h9ee0642_0
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
