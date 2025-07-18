@@ -1,0 +1,31 @@
+Bootstrap: docker
+From: ubuntu:latest
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running R version 4.3.3"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    # Update and add the local information
+    apt-get update && apt-get install -y locales
+    locale-gen en_US.UTF-8
+    update-locale LANG=en_US.UTF-8
+
+    # Update and install R
+    apt-get update && apt-get install -y r-base r-base-dev
+
+    # Install the renv package
+    Rscript -e "install.packages('renv')"
+
+    # Make the HPC mount points
+    mkdir -p /scratch /storage
+   
+    # Clean up remove unnecessary files
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+%runscript
+    exec R "$@"
+
