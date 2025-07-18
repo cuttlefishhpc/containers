@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/raxml:8.2.13--h7b50bb2_3
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
