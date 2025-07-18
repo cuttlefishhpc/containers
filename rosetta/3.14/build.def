@@ -1,0 +1,28 @@
+Bootstrap: docker
+From: rosettacommons/rosetta
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running rosetta 3.14"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+    
+%runscript
+    if [ $# -eq 0 ]; then
+        echo "Usage: rosetta@3.14 <command>"
+        echo "Commands:"
+        echo "  read_tensor"
+        echo "  read_tensor.cxx11threadserialization.linuxgccrelease"
+        echo "  relax"
+        echo "  relax.cxx11threadserialization.linuxgccrelease"
+        echo "  ..."
+    else
+        exec "$@"
+    fi
