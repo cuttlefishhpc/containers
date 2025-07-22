@@ -1,0 +1,40 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running star 2.7.11b"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%environment
+    export PATH=/opt/STAR/bin:$PATH
+
+%post
+    apt-get update && apt-get install -y \
+        wget \
+        make \
+        g++ \
+        zlib1g-dev \
+        libbz2-dev \
+        liblzma-dev \
+        libcurl4-openssl-dev \
+        ca-certificates \
+        vim-common \
+        && rm -rf /var/lib/apt/lists/*
+
+    # Download and compile STAR
+    cd /opt
+    wget https://github.com/alexdobin/STAR/archive/2.7.11b.tar.gz
+    tar -xzf 2.7.11b.tar.gz
+    cd STAR-2.7.11b/source
+    make STAR
+
+    # Move binary to a standard location
+    mkdir -p /opt/STAR/bin
+    cp STAR /opt/STAR/bin/
+
+%runscript
+    exec STAR "$@"
+
