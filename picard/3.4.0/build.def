@@ -1,0 +1,38 @@
+Bootstrap: docker
+From: mambaorg/micromamba:1.5.8
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running picard 3.4.0"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%files
+    environment.yml /environment.yml
+
+%post
+    set -e
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+
+    echo "installing locales"
+    apt-get update && apt-get install -y locales
+    sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen
+    locale-gen en_US.UTF-8
+
+    # Set up micromamba
+    export MAMBA_ROOT_PREFIX=/opt/conda
+    export PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
+
+    micromamba install -y -n base -f /environment.yml
+    micromamba clean --all --yes
+
+%environment
+    export MAMBA_ROOT_PREFIX=/opt/conda
+    export PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
+    export CONDA_DEFAULT_ENV=base
+
+%runscript
+    exec picard "$@"
