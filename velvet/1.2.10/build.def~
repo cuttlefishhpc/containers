@@ -1,0 +1,16 @@
+Bootstrap: localimage
+From: raw.sif
+
+%runscript
+   if [ $# -eq 0 ]; then
+     echo "Usage: velvet@1.2.10 <command>"
+        echo "Commands:"
+        commands=$(find /usr/local/bin -maxdepth 1 -type f -executable | sort)
+        for command in $commands; do
+            base=$(basename "$command")
+            echo "  $base"
+        done
+   else
+     exec "$@"
+   fi
+

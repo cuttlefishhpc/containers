@@ -1,0 +1,28 @@
+Bootstrap: localimage
+From: raw.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running velvet 1.2.10"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+
+%runscript
+    if [ $# -eq 0 ]; then
+        echo "Usage: velvet@1.2.10 <command>"
+        echo "Commands:"
+        commands=$(find /usr/local/bin -maxdepth 1 -type f -executable | sort)
+        for command in $commands; do
+            base=$(basename "$command")
+            echo "  $base"
+        done
+    else
+        exec "$@"
+    fi
