@@ -1,0 +1,35 @@
+Bootstrap: docker
+From: ubuntu:latest
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running sweed 4.0.0"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "Creating HPC mount points"
+    mkdir -p /storage /scratch
+    
+    echo "Updating ubuntu and adding dependencies"
+    apt-get update && apt-get install -y git gcc make
+
+    echo "Downloading omegaplus"
+    mkdir -p /opt
+    cd /opt
+    git clone https://github.com/alachins/omegaplus
+    cd omegaplus
+
+    echo "Patching makefile to add -fcommon"
+    # Note, there are many possible versions, only compiling the base one
+    sed -i -E 's/^(CFLAGS\s*=\s*.*)(#-D_UNROLL)$/\1 -fcommon \2/' "Makefile.gcc"
+    make -f Makefile.gcc
+
+    echo "Moving to /usr/local/bin"
+    mv OmegaPlus /usr/local/bin/
+
+%runscript
+    exec OmegaPlus "$@"
