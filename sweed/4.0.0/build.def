@@ -8,9 +8,6 @@ From: ubuntu:latest
     Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
     License "MIT"
 
-%files
-    sweed/SweeD /usr/local/bin/SweeD
-
 %post
     set -e
 
