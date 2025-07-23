@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/trinity:2.15.2--pl5321hdcf5f25_1
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
