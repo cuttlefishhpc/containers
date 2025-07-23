@@ -4,7 +4,7 @@ From: ubuntu:latest
 %labels
     Author "Andrew S. Tupper, PhD"
     Version "1.0"
-    Description "Container for running sweed 4.0.0"
+    Description "Container for running OmegaPlus 3.0.3"
     Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
     License "MIT"
 
