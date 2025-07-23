@@ -1,0 +1,33 @@
+Bootstrap: docker
+From: mambaorg/micromamba:1.5.8
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running trimmomatic 0.39"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%files
+    environment.yml /environment.yml
+
+%post
+    set -e
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+
+    # Set up micromamba
+    export MAMBA_ROOT_PREFIX=/opt/conda
+    export PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
+
+    micromamba install -y -n base -f /environment.yml
+    micromamba clean --all --yes
+
+%environment
+    export MAMBA_ROOT_PREFIX=/opt/conda
+    export PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
+    export CONDA_DEFAULT_ENV=base
+
+%runscript
+    exec trimmomatic "$@"
