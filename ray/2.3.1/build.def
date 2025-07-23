@@ -1,0 +1,31 @@
+Bootstrap: docker
+From: intel/oneapi-hpckit
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running ray 2.3.1"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "Creating HPC mount points"
+    mkdir -p /storage /scratch
+    
+    echo "Updating ubuntu and adding dependencies"
+    apt-get update && apt-get install -y git gcc make
+
+    echo "Downloading ray and ray platform"
+    mkdir -p /opt
+    cd /opt
+    git clone https://github.com/sebhtml/ray
+    git clone https://github.com/sebhtml/RayPlatform
+
+    echo "Building ray"
+    cd ray
+    make
+
+%runscript
+    exec /opt/ray/Ray "$@"
