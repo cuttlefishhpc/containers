@@ -1,0 +1,34 @@
+Bootstrap: localimage
+From: raw.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running poppler 23.04.0"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+    
+%runscript
+  if [ -z "$1" ]; then
+    echo "Usage: poppler@23.04.0 <command>"
+    echo "Commands:"
+    echo "  pdfattach"
+    echo "  pdfdetach"
+    echo "  pdffonts"
+    echo "  pdfimages"
+    echo "  pdfinfo"
+    echo "  pdfseparate"
+    echo "  pdftohtml"
+    echo "  pdftoppm"
+    echo "  pdftops"
+    echo "  pdftotext"
+    echo "  pdfunite"
+  else
+    exec "$@"
+  fi
