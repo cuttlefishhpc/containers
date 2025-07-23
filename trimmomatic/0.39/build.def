@@ -24,10 +24,22 @@ From: mambaorg/micromamba:1.5.8
     micromamba install -y -n base -f /environment.yml
     micromamba clean --all --yes
 
+    # Copy the adapter files
+    cp -r /opt/conda/share/trimmomatic/adapters /opt/adapters/
+
 %environment
     export MAMBA_ROOT_PREFIX=/opt/conda
     export PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
     export CONDA_DEFAULT_ENV=base
 
 %runscript
-    exec trimmomatic "$@"
+    if [ $# -eq 0 ]; then
+        echo "Trimmomatic adapter files are located at: /opt/adapters/"
+        for file in /opt/adapters/*; do
+            echo "  $file"
+        done
+        echo ""
+        exec trimmomatic --help
+    else
+    	exec trimmomatic "$@"
+    fi
