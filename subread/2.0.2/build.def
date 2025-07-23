@@ -1,0 +1,44 @@
+Bootstrap: docker
+From: ubuntu:latest
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running subread 2.0.2"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "Creating HPC mount points"
+    mkdir -p /storage /scratch
+    
+    echo "Updating ubuntu and adding dependencies"
+    apt-get update && apt-get install -y wget
+
+    echo "Downloading subread"
+    mkdir -p /opt
+    cd /opt
+    wget https://github.com/ShiLab-Bioinformatics/subread/releases/download/2.0.2/subread-2.0.2-Linux-x86_64.tar.gz    
+    tar -xvzf subread-2.0.2-Linux-x86_64.tar.gz
+
+    echo "Moving to /usr/local/bin"
+    mv subread-2.0.2-Linux-x86_64/bin/utilities/* /usr/local/bin
+    rmdir subread-2.0.2-Linux-x86_64/bin/utilities/
+    mv subread-2.0.2-Linux-x86_64/bin/* /usr/local/bin
+
+    echo "Caching commands list"
+    find /usr/local/bin/ -maxdepth 1 -type f -executable | sort > /opt/.commands.txt
+
+%runscript
+    if [ $# -eq 0 ]; then
+        echo "Usage: subread@2.0.2 <command>"
+        echo "Commands:"
+        while IFS= read -r command; do
+            echo "  $(basename "$command")"
+        done < /opt/.commands.txt
+    else
+        exec "$@"
+    fi
+
