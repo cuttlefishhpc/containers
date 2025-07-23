@@ -1,0 +1,45 @@
+Bootstrap: docker
+From: ubuntu:latest
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running sweed 4.0.0"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%files
+    sweed/SweeD /usr/local/bin/SweeD
+
+%post
+    set -e
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+    
+    echo "updating ubuntu and adding dependencies"
+    apt-get update && apt-get install -y git gcc make
+
+    echo "building sweed"
+    mkdir -p /opt
+    cd /opt
+    git clone https://github.com/alachins/sweed
+    cd sweed
+
+    echo "Patching makefile to add -fcommon"
+    sed -i 's/^\(CFLAGS *=.*\)/\1 -fcommon/' Makefile.gcc
+    make -f Makefile.gcc
+
+    echo "Moving sweed to /usr/local/bin"
+    mv SweeD /usr/local/bin/SweeD
+
+    echo "Caching the help menu"
+    mkdir -p /opt
+    (SweeD 2>&1) > /opt/.help_menu.txt || true
+
+%runscript
+    if [ $# -eq 0 ]; then
+        exec cat /opt/.help_menu.txt
+    else
+        exec SweeD "$@"
+    fi
