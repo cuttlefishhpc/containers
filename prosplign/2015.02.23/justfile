@@ -5,4 +5,4 @@ default:
     just build-sif
 
 build-sif:
-    sudo apptainer build --force final.sif build.def
+    apptainer build --fakeroot --force final.sif build.def

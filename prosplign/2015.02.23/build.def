@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: ubuntu:18.04
+From: ubuntu:22.04
 
 %labels
     Author "Andrew S. Tupper, PhD"
@@ -8,13 +8,11 @@ From: ubuntu:18.04
     Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
     License "MIT"
 
-%files
-    prosplign.tar.gz /opt/prosplign.tar.gz
-
 %post
     set -e
 
     apt-get update && apt-get install -y \
+        wget \
         tar \
         gzip \
         libsqlite3-0 \
@@ -32,17 +30,20 @@ From: ubuntu:18.04
         libidn2-0 \
         libssh-4 \
         libpsl5 \
-        libssl1.1 \
-        libldap-2.4-2 \
+        libldap-common \
         libbrotli1 \
         libkrb5support0 \
         libkeyutils1 \
-        libevent-2.1-6 \
         libsasl2-2 \
         libselinux1 \
         libpcre3 \
         libdb4.6 \
         && rm -rf /var/lib/apt/lists/*
+
+    # Download the package
+    mkdir -p /opt
+    cd /opt
+    wget -r -np -nH --cut-dirs=3 ftp://ftp.ncbi.nlm.nih.gov/genomes/TOOLS/ProSplign/prosplign.tar.gz
 
     # Extract and install ProSplign
     cd /usr/local/bin
