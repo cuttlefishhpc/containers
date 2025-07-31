@@ -11,7 +11,7 @@ From: raw.sif
 %post
     set -e
 
-    echo "creating HPC mount points"
+    echo "Creating HPC mount points"
     mkdir -p /storage /scratch
     
     echo "Caching the help menu"
