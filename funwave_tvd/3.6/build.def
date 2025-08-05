@@ -1,0 +1,27 @@
+Bootstrap: docker
+From: intel/oneapi-hpckit
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running funwave_tvd 3.6"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%files
+    FUNWAVE-TVD /opt/FUNWAVE-TVD
+
+%post
+    set -e
+
+    # Build funwave
+    cd /opt/FUNWAVE-TVD
+    make clean 
+    make
+
+    # Make the /scratch and /storage for mounting
+    mkdir -p /scratch /storage
+
+%runscript
+    /opt/FUNWAVE-TVD/funwave-work/funwave--mpiifort-parallel-single "$@"
+
