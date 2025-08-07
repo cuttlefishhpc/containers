@@ -23,5 +23,61 @@ From: intel/oneapi-hpckit
     mkdir -p /scratch /storage
 
 %runscript
-    /opt/FUNWAVE-TVD/funwave-work/funwave--mpiifort-parallel-single "$@"
+    case "$1" in
+        run)
+             echo "Executing in run mode ..."
+             shift
+             exec /opt/FUNWAVE-TVD/funwave-work/funwave--mpiifort-parallel-single "$@"
+             ;;
+        env)
+             echo "Executing in env mode ..."
+             shift
+             exec "$@"
+             ;;
+        dump)
+             echo "Dumping files used in original build of container..."
+             exec cp -r /opt/FUNWAVE-TVD '.'
+             ;;
+        *)
+             echo "Modes:"
+             echo "    run -> runs the containers funwave--mpiifort-parallel-single binary"
+             echo "    env -> use the container environment to call make or run a command"
+             echo "    dump -> dump the original funwave files used in this container"
+             echo "    help -> show this help message"
+             echo ""
+             echo "Examples running the containers binary:"
+             echo ""
+             echo "    funwave_tvd run input.txt"
+             echo "        - use the containers funwave--mpiifort-parallel-single binary on input.txt"
+             echo ""
+             echo "    mpirun -n 4 funwave_tvd run input.txt"
+             echo "        - use the hosts mpi runtime to run the containers binary in parallel"
+             echo ""
+             echo "Examples using the containers environment:"
+             echo ""
+             echo "    funwave_tvd env make"
+             echo "        - call 'make' using the containers compiler / library environment."
+             echo "        - this can be used to build a new funwave binary external to the container."
+	     echo ""
+             echo "    funwave_tvd env funwave--mpiifort-single input.txt"
+             echo "        - run some newly-compiled binary using the containers libraries."
+             echo "        - this is needed to satisfy the runtime dependencies of the binary created previously."
+             echo ""
+             echo "    mpirun -n 4 funwave_tvd env funwave--mpiifort-single input.txt"
+             echo "        - use the hosts mpi to run the newly-compiled binary in parallel."
+             echo "        - works across multiple computers / compute nodes."
+             echo ""
+             echo "    funwave_tvd env mpirun -n 4 funwave--mpiifort-single input.txt"
+             echo "        - use the containers mpi to run the newly-compiled binary in parallel."
+             echo "        - works on a single computer and the host does NOT need mpi installed."
+             echo ""
+             echo "Example dumping the interal files:"
+             echo ""
+	     echo "    funwave_tvd dump"
+             echo "        - dump the internally stored FUNWAVE-TVD directory. "
+             echo "        - useful for modifying a known working copy. "
+             echo ""
+             ;;
+esac
+
 
