@@ -1,0 +1,22 @@
+Bootstrap: docker
+From: ubuntu:latest
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running ninja 1.13.0"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+
+    echo "Installing ninja"
+    apt-get update && apt-get install -y python3 pipx
+    pipx install ninja==1.13.0
+
+%runscript
+    exec /root/.local/bin/ninja "$@"
