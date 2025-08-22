@@ -1,0 +1,95 @@
+Bootstrap: docker
+From: intel/oneapi-hpckit
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running coawst 3.7"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%files
+    COAWST /opt/COAWST
+
+%post
+    set -e
+
+    apt-get update
+
+    echo "Installing build dependencies..."
+    apt-get install -y \
+        gfortran \
+        libnetcdf-dev \
+        libnetcdff-dev \
+        locales \
+        subversion
+
+    echo "Setting locales"
+    locale-gen en_US.UTF-8
+
+    echo "Testing build of coawst"
+    cd /opt/COAWST/Projects/AS_2D_swan_flat
+    bash coawst.bash_swanonly
+
+    echo "Making the /scratch and /storage directories for mounting"
+    mkdir -p /scratch /storage
+
+%runscript
+    case "$1" in
+        run)
+             echo "Executing in run mode ..."
+             shift
+             exec /opt/COAWST/Projects/AS_2D_swan_flat/coawstM "$@"
+             ;;
+        env)
+             echo "Executing in env mode ..."
+             shift
+             exec "$@"
+             ;;
+        dump)
+             echo "Dumping files used in original build of container..."
+             exec cp -r /opt/COAWST '.'
+             ;;
+        *)
+             echo "Modes:"
+             echo "    run -> runs the containers coawstM (AS_2D_swan_flat) binary"
+             echo "    env -> use the container environment to call make or run a command"
+             echo "    dump -> dump the original coawst files used in this container"
+             echo "    help -> show this help message"
+             echo ""
+             echo "Examples running the containers binary:"
+             echo ""
+             echo "    coawst run swan_2D_flat.in"
+             echo "        - use the containers coawstM (AS_2D_swan_flat) binary on swan_2D_flat.in"
+             echo ""
+             echo "    mpirun -n 4 coawst run swan_2D_flat.in"
+             echo "        - use the hosts mpi runtime to run the containers binary in parallel"
+             echo ""
+             echo "Examples using the containers environment:"
+             echo ""
+             echo "    coawst env ./coawst.bash_swanonly"
+             echo "        - call './coawst.bash_swanonly' using the containers compiler / library environment."
+             echo "        - this can be used to build a new coawst binary external to the container."
+	     echo ""
+             echo "    coawst env ./coastM swan_2D_flat.in"
+             echo "        - run some newly-compiled binary using the containers libraries."
+             echo "        - this is needed to satisfy the runtime dependencies of the binary created previously."
+             echo ""
+             echo "    mpirun -n 4 coawst env ./coastM swan_2D_flat.in"
+             echo "        - use the hosts mpi to run the newly-compiled binary in parallel."
+             echo "        - works across multiple computers / compute nodes."
+             echo ""
+             echo "    coawst env mpirun -n 4 ./coastM swan_2D_flat.in"
+             echo "        - use the containers mpi to run the newly-compiled binary in parallel."
+             echo "        - works on a single computer and the host does NOT need mpi installed."
+             echo ""
+             echo "Example dumping the interal files:"
+             echo ""
+	     echo "    coawst dump"
+             echo "        - dump the internally stored COAWST directory. "
+             echo "        - useful for modifying a known working copy. "
+             echo ""
+             ;;
+esac
+
+
