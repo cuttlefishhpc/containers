@@ -1,2 +1,0 @@
-subroutine SwanReadADCGrid
-end subroutine SwanReadADCGrid
