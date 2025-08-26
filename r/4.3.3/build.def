@@ -3,7 +3,7 @@ From: ubuntu:latest
 
 %labels
     Author "Andrew S. Tupper, PhD"
-    Version "1.0"
+    Version "1.1"
     Description "Container for running R version 4.3.3"
     Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
     License "MIT"
@@ -15,10 +15,25 @@ From: ubuntu:latest
     update-locale LANG=en_US.UTF-8
 
     # Update and install R
-    apt-get update && apt-get install -y r-base r-base-dev
+    apt-get update && apt-get install -y \
+        r-base \
+        r-base-dev \
+        libfontconfig1-dev \
+        libharfbuzz-dev \
+        libfribidi-dev \
+        libfreetype6-dev \
+        libpng-dev \
+        libtiff5-dev \
+        libjpeg-dev \
+        libssl-dev \
+        libcurl4-openssl-dev \
+        libxml2-dev \
+        pkg-config \
+        build-essential
 
     # Install the renv package
     Rscript -e "install.packages('renv')"
+    Rscript -e "install.packages('devtools')"
 
     # Make the HPC mount points
     mkdir -p /scratch /storage
