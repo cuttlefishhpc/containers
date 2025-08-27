@@ -1,0 +1,13 @@
+abstract: Build files required to reproduce the containers used on cuttlefish.
+authors:
+- family-names: Andrew Tupper
+cff-version: 1.2.0
+date-released: '2025-08-27'
+doi: 10.5281/zenodo.16969199
+license:
+- mit
+message: If you use this software, please cite it using the metadata from this file.
+repository-code: https://github.com/cuttlefishhpc/containers/tree/v1.0.0
+title: 'cuttlefishhpc/containers: v1.0.0'
+type: software
+version: v1.0.0
