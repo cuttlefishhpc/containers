@@ -1,7 +1,14 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16969199.svg)](https://doi.org/10.5281/zenodo.16969199)
+
 # Containers
 This github repo stores the build files required to reproduce the containers used on the Cuttlefish HPC.
 Note that the images themselves are publically available for download on https://quay.io/repository/cuttlefishhpc/software
 and not included in this repo due to size constraints.
+
+## Citation information
+Users of this repository (and https://quay.io/repository/cuttlefishhpc/software) must cite the original software producer
+For example, if you use bwa, please cite the original author(s) which made bwa. You can also cite this repository in its
+entirety using the doi tagged above or the CITATION.cff file.
 
 ## Usage
 Each image is designed such that it can be run as if it was a "normal" software install. For example,
@@ -22,4 +29,3 @@ To rebuild every container, the following dependencies are needed
 3. miniconda or equivalent (https://anaconda.org/anaconda/conda)
   - this is only needed if you want to rebuild the environment.yml file for specific container
   - building the container itself doesn't require conda as it is already built inside the base image
-
