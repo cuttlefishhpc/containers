@@ -2,7 +2,7 @@
 
 # Containers
 This github repo stores the build files required to reproduce the containers used on the Cuttlefish HPC.
-Note that the images themselves are publically available for download on https://quay.io/repository/cuttlefishhpc/software
+Note that the images themselves are publicly available for download on https://quay.io/repository/cuttlefishhpc/software
 and not included in this repo due to size constraints.
 
 ## Citation information
