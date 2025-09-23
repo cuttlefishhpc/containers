@@ -1,0 +1,50 @@
+Bootstrap: docker
+From: nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running rfantibody - 2025-9-22"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "Creating HPC mount points"
+    mkdir -p /storage /scratch
+
+    echo "Updating and installing dependencies"
+    apt-get update && apt-get install -y software-properties-common && \
+    apt-get install --no-install-recommends -y python3.10 python3-pip pipx vim make wget git
+
+    echo "Create symlinks for python and pip"
+    ln -s /usr/bin/python3.10 /usr/local/bin/python
+    ln -s /usr/bin/pip3 /usr/local/bin/pip
+
+    # Install poetry
+    pip install poetry
+    poetry config virtualenvs.create true
+    poetry config virtualenvs.in-project true
+
+    # Clone the repo to /home
+    git clone https://github.com/RosettaCommons/RFantibody /home
+
+    # Move to the home and setup
+    cd /home
+
+    # Download the weights and call setup
+    bash include/download_weights.sh
+    bash include/setup.sh
+    poetry run pip install biotite
+
+%environment
+    export DEBIAN_FRONTEND=noninteractive
+    export PATH="/home/.venv/bin:$PATH"
+
+%runscript
+    if [ $# -eq 0 ]; then
+        exec /bin/bash
+    else
+        exec "$@"
+    fi
