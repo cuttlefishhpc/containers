@@ -3,13 +3,14 @@ From: intel/oneapi-hpckit
 
 %labels
     Author "Andrew S. Tupper, PhD"
-    Version "1.0"
+    Version "1.1"
     Description "Container for running coawst 3.7"
     Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
     License "MIT"
 
 %files
     COAWST /opt/COAWST
+    MCT /opt/MCT
 
 %post
     set -e
@@ -30,6 +31,15 @@ From: intel/oneapi-hpckit
     echo "Testing build of coawst"
     cd /opt/COAWST/Projects/AS_2D_swan_flat
     bash coawst.bash_swanonly
+
+    echo "Building MCT"
+    cd /opt/MCT/
+    ./configure
+    make install
+
+    echo "Copying include and lib files to /usr/lib and /usr/include"
+    cp /usr/local/lib/lib*.a /usr/lib/
+    cp /usr/local/include/* /usr/include/
 
     echo "Making the /scratch and /storage directories for mounting"
     mkdir -p /scratch /storage
@@ -91,5 +101,4 @@ From: intel/oneapi-hpckit
              echo ""
              ;;
 esac
-
 
