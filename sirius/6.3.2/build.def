@@ -1,0 +1,31 @@
+Bootstrap: docker
+From: ubuntu:24.04
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running sirius version 6.3.2"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    # Update package list and install basic tools
+    apt-get update && apt-get install -y \
+            wget \
+            unzip \
+            && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+    
+    echo "Downloading sirius"
+    mkdir -p /opt
+    cd /opt
+    wget https://github.com/sirius-ms/sirius/releases/download/v6.3.2/sirius-6.3.2-linux-x64.zip
+    unzip sirius-6.3.2-linux-x64.zip
+    cd sirius
+
+%runscript
+    exec /opt/sirius/bin/sirius "$@"
