@@ -1,0 +1,30 @@
+Bootstrap: localimage
+From: raw.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running NCBIs sra tools version 3.1.1"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "Creating HPC mount points"
+    mkdir -p /storage /scratch
+    
+    echo "caching abyss commands"
+    mkdir -p /opt
+    ls /usr/local/bin | grep -v "\." | sort > /opt/.commands
+
+%runscript
+    if [ $# -eq 0 ]; then
+        echo "Usage: sra@3.1.1 <command>"
+        echo "Commands:"
+        while IFS= read -r command; do
+            echo "  $(basename "$command")"
+        done < /opt/.commands
+    else
+        exec "$@"
+    fi
