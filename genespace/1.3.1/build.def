@@ -3,7 +3,7 @@ From: mambaorg/micromamba:ubuntu24.04
 
 %labels
     Author "Andrew S. Tupper, PhD"
-    Version "1.0"
+    Version "2.0"
     Description "Container for running Genespace 1.3.1"
     Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
     License "MIT"
@@ -28,8 +28,9 @@ From: mambaorg/micromamba:ubuntu24.04
 
 
     echo "Installing conda packages using micromamba"
-    micromamba install -y -n base -c conda-forge -c bioconda orthofinder
-    micromamba install -y -n base -c conda-forge -c bioconda orthofinder
+    micromamba install -y -n base -c conda-forge python=3.10
+    micromamba install -y -n base -c conda-forge -c bioconda orthofinder=2.5
+    micromamba install -y -n base -c conda-forge -c bioconda mcscanx
     micromamba install -y -n base -c conda-forge -c bioconda xz
     micromamba install -y -n base -c conda-forge -c bioconda r-base r-devtools r-biocmanager
     micromamba clean --all --yes
