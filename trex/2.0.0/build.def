@@ -1,0 +1,37 @@
+Bootstrap: docker
+From: intel/oneapi-hpckit
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running TRex 2.0.0"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+
+    apt-get update && apt-get install -y --no-install-recommends wget libgl1
+
+    wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+    chmod +x Miniforge3-Linux-x86_64.sh
+    bash Miniforge3-Linux-x86_64.sh -b -p /usr/local/bin/miniforge
+
+    PATH=/usr/local/bin/miniforge/bin:$PATH
+
+    conda create -n tracking -c trexing trex
+
+    # Download the yolo pretrained parameters and save in opt
+    mkdir -p /opt/yolo/
+    cd /opt/yolo/
+    wget https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n.pt
+
+%environment
+    export CONDA_DEFAULT_ENV=track
+    export PATH=/usr/local/bin/miniforge/bin:$PATH
+
+%runscript
+    exec conda run -n tracking trex -nowindow -auto_quit -detect_model "/opt/yolo/yolo11n.pt" "$@"
