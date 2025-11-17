@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/macs2:2.2.9.1--py39hbcbf7aa_2
+
+build-sif:
+    apptainer build --force final.sif build.def
