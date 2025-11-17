@@ -1,0 +1,22 @@
+Bootstrap: localimage
+From: raw.sif
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running fastqc 0.12.1"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+    
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+
+%runscript
+    if [ $# -eq 0 ]; then
+    	fastqc --help
+    else
+        exec fastqc "$@"
+    fi
