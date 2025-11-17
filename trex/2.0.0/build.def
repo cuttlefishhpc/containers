@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: intel/oneapi-hpckit
+From: ubuntu:latest
 
 %labels
     Author "Andrew S. Tupper, PhD"
@@ -14,20 +14,27 @@ From: intel/oneapi-hpckit
     echo "creating HPC mount points"
     mkdir -p /storage /scratch
 
-    apt-get update && apt-get install -y --no-install-recommends wget libgl1
+    apt-get update && apt-get install -y --no-install-recommends wget libgl1 ca-certificates
+    update-ca-certificates
 
     wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
     chmod +x Miniforge3-Linux-x86_64.sh
     bash Miniforge3-Linux-x86_64.sh -b -p /usr/local/bin/miniforge
+    rm Miniforge3-Linux-x86_64.sh
 
+    # Create the conda env
     PATH=/usr/local/bin/miniforge/bin:$PATH
-
-    conda create -n tracking -c trexing trex
+    conda create -n tracking -c trexing trex=2.0.0
 
     # Download the yolo pretrained parameters and save in opt
     mkdir -p /opt/yolo/
     cd /opt/yolo/
     wget https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n.pt
+
+    # Cleanup to reduce size    
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+    conda clean -afy
 
 %environment
     export CONDA_DEFAULT_ENV=track
