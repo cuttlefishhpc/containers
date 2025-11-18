@@ -15,5 +15,9 @@ From: raw.sif
     mkdir -p /storage /scratch
 
 %runscript
-    exec deeptools "$@"
+    if [ $# -eq 0 ]; then
+        exec deeptools "$@"
+    else
+        exec "$@"
+    fi
 
