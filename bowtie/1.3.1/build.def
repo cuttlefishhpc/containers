@@ -3,7 +3,7 @@ From: raw.sif
 
 %labels
     Author "Andrew S. Tupper, PhD"
-    Version "1.0"
+    Version "1.1"
     Description "Container for running bowtie version 1.3.1"
     Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
     License "MIT"
@@ -22,5 +22,5 @@ From: raw.sif
     if [ $# -eq 0 ]; then
         exec cat /opt/.help_menu.txt
     else
-        exec "$@"
+        exec bowtie "$@"
     fi
