@@ -22,5 +22,5 @@ From: raw.sif
     if [ $# -eq 0 ]; then
         exec cat /opt/.help_menu.txt
     else
-        exec "$@"
+        exec bowtie2 "$@"
     fi
