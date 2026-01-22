@@ -1,0 +1,12 @@
+help:
+    just --list
+
+default:
+    just pull-raw
+    just build-sif
+
+pull-raw:
+    apptainer pull --force raw.sif https://depot.galaxyproject.org/singularity/kmer-jellyfish:2.3.1--py39h2de1943_5
+
+build-sif:
+    apptainer build --force --ignore-fakeroot-command final.sif build.def
