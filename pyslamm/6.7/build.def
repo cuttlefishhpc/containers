@@ -38,5 +38,5 @@ From: ubuntu:latest
     if [ "$#" -eq 0 ]; then
         exec python3 /usr/local/lib/python3.12/dist-packages/pySLAMM6_7.py
     else
-        exec python3 /usr/local/lib/python3.12/dist-packages/SLAMM_run.py "$@"
+        exec python3 /usr/local/lib/python3.12/dist-packages/SLAMM_Run.py "$@"
     fi
