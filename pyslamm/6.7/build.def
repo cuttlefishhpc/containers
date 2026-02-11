@@ -1,0 +1,42 @@
+Bootstrap: docker
+From: ubuntu:latest 
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running pySLAMM v6.7"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "Creating HPC mount points"
+    mkdir -p /storage /scratch
+
+    apt-get update
+    apt-get install -y python3 pip git
+
+    mkdir -p /opt
+    cd /opt
+    
+    echo "Cloning the repo"
+    git clone https://github.com/WarrenPinnacle/pySLAMM6.7
+    cd pySLAMM6.7
+    
+    echo "Building the package"
+    pip3 install --break-system-packages --upgrade build
+    python3 -m build
+
+    echo "Installing pyslamm"
+    pip3 install --break-system-packages dist/pyslamm*.whl
+    
+%runscript
+    python3 /usr/local/lib/python3.12/dist-packages/pySLAMM6_7.py
+
+%runscript
+    if [ "$#" -eq 0 ]; then
+        exec python3 /usr/local/lib/python3.12/dist-packages/pySLAMM6_7.py
+    else
+        exec python3 /usr/local/lib/python3.12/dist-packages/SLAMM_run.py "$@"
+    fi

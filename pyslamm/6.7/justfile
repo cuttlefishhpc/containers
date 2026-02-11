@@ -1,0 +1,8 @@
+help:
+    just --list
+
+default:
+    just build-sif
+
+build-sif:
+    apptainer build --force final.sif build.def
