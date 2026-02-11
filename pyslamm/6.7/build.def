@@ -32,9 +32,6 @@ From: ubuntu:latest
     pip3 install --break-system-packages dist/pyslamm*.whl
     
 %runscript
-    python3 /usr/local/lib/python3.12/dist-packages/pySLAMM6_7.py
-
-%runscript
     if [ "$#" -eq 0 ]; then
         exec python3 /usr/local/lib/python3.12/dist-packages/pySLAMM6_7.py
     else
