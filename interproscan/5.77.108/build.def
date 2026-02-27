@@ -1,0 +1,21 @@
+Bootstrap: docker
+From: interpro/interproscan:5.77-108.0
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running interproscan 5.77-108.0"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%post
+    set -e
+
+    echo "Creating HPC mount points"
+    mkdir -p /storage /scratch
+    
+    echo "Caching the help menu"
+    mkdir -p /opt
+
+%runscript
+    exec /opt/interproscan/interproscan.sh "$@"
