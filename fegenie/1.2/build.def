@@ -1,0 +1,52 @@
+Bootstrap: docker
+From: mambaorg/micromamba:1.5.8
+
+%labels
+    Author "Andrew S. Tupper, PhD"
+    Version "1.0"
+    Description "Container for running FeGenie 1.2"
+    Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
+    License "MIT"
+
+%files
+    environment.yml /environment.yml
+
+%post
+    set -e
+
+    apt-get update
+    apt-get install -y git
+
+    #mkdir -p /opt
+    #git clone https://github.com/Arkadiy-Garber/FeGenie.git
+    #cd FeGenie
+
+    echo "creating HPC mount points"
+    mkdir -p /storage /scratch
+
+    # Set up micromamba
+    export MAMBA_ROOT_PREFIX=/opt/conda
+    export PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
+
+    micromamba install -y -n base -f /environment.yml
+    micromamba clean --all --yes
+
+    # Run biom and cache the help menu
+    mkdir -p /opt
+    export rscripts=/opt/conda/share/fegenie-1.2/rscripts/
+    export iron_hmms=/opt/conda/share/fegenie-1.2/hmms/iron/
+    FeGenie.py -h > /opt/.help_menu.txt
+
+%environment
+    export MAMBA_ROOT_PREFIX=/opt/conda
+    export PATH=$MAMBA_ROOT_PREFIX/bin:$PATH
+    export CONDA_DEFAULT_ENV=base
+    export rscripts=/opt/conda/share/fegenie-1.2/rscripts/
+    export iron_hmms=/opt/conda/share/fegenie-1.2/hmms/iron/
+
+%runscript
+    if [ $# -eq 0 ]; then
+        exec cat /opt/.help_menu.txt
+    else
+        exec FeGenie.py "$@"
+    fi 
