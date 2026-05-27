@@ -1,9 +1,9 @@
-Bootstrap: localimage
-From: raw.sif
+Bootstrap: docker
+From: ubuntu:20.04
 
 %labels
     Author "Andrew S. Tupper, PhD"
-    Version "1.0"
+    Version "1.1"
     Description "Container for running mitofinder 1.4.1"
     Maintainer "Andrew S. Tupper <tuppera@uncw.edu>"
     License "MIT"
@@ -13,14 +13,31 @@ From: raw.sif
 
     echo "creating HPC mount points"
     mkdir -p /storage /scratch
-    
-    echo "Caching the help menu"
+
+    # Grab the github repo
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y git gcc make python2.7 default-jre libidn11 libidn11-dev
+
+    # Alias python
+    ln -s /usr/bin/python2.7 /usr/bin/python
+
+    # Install Mitofinder
     mkdir -p /opt
-    (mitofinder -h 2>&1) > /opt/.help_menu.txt || true
+    cd /opt
+    git clone https://github.com/RemiAllio/MitoFinder
+    cd MitoFinder
+    ./install.sh
+
+    # Run mitofinder and cache the help menu
+    ./mitofinder -h > /opt/.help_menu.txt
+
+%environment
+    export PATH=/opt/MitoFinder:$PATH
 
 %runscript
     if [ $# -eq 0 ]; then
         exec cat /opt/.help_menu.txt
     else
         exec mitofinder "$@"
-    fi
+    fi 
